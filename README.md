@@ -32,4 +32,3 @@ This project helps to predict whether a customer will leave a company or not usi
 - Best model: XGBoost with high accuracy and AUC score
 - Helpful features: Contract, Tenure, OnlineSecurity, MonthlyCharges
 
-## 📂 Project Structure
