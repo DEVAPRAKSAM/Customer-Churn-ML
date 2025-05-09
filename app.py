@@ -37,7 +37,7 @@ if st.button("Predict Churn"):
         st.success("✅ This customer is likely to STAY.")
 
 # 1. Dataset load pannunga (replace with your file name)
-df = pd.read_csv("customer_churn.csv")
+df = pd.read_csv("WA_Fn-UseC_-Telco-Customer-Churn.csv")
 
 # 2. Split features & target
 X = df.drop("Churn", axis=1)
@@ -51,6 +51,18 @@ model = XGBClassifier()
 model.fit(X_train, y_train)
 
 # 5. Save as .pkl
+import joblib
+
+# Suppose 'model' is your trained XGBoost model
 joblib.dump(model, "xgboost_churn_model.pkl")
 
+
 print("✅ Model trained and saved successfully!")
+import joblib
+import xgboost as xgb
+
+# Assuming 'model' is your trained XGBoost model
+joblib.dump(model, "xgboost_churn_model.pkl")
+with open("xgboost_churn_model.pkl", "rb") as f:
+    content = f.read()
+    print(len(content))  # Should be > 0
