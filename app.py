@@ -1,68 +1,64 @@
 import streamlit as st
-import joblib
 import numpy as np
-from xgboost import XGBClassifier
-from sklearn.model_selection import train_test_split
+import joblib
 
-# Load model
+# Load the model
 model = joblib.load("xgboost_churn_model.pkl")
 
-# Title
-st.title("🔍 Customer Churn Prediction App")
+st.set_page_config(page_title="Customer Churn Predictor", layout="centered")
+st.title("📉 Customer Churn Prediction App")
+st.markdown("Enter the customer details below to predict whether they are likely to churn.")
 
-# Input form
-st.header("Enter Customer Details:")
-
-gender = st.selectbox("Gender", ["Female", "Male"])
-senior = st.selectbox("Senior Citizen", ["No", "Yes"])
-tenure = st.slider("Tenure (months)", 0, 72, 12)
-monthly_charges = st.slider("Monthly Charges", 0, 150, 50)
+# Input fields
+gender = st.selectbox("Gender", ["Male", "Female"])
+senior_citizen = st.selectbox("Is the customer a senior citizen?", ["Yes", "No"])
+partner = st.selectbox("Has a partner?", ["Yes", "No"])
+dependents = st.selectbox("Has dependents?", ["Yes", "No"])
+tenure = st.slider("Tenure (months)", min_value=0, max_value=72, value=12)
+monthly_charges = st.slider("Monthly Charges", min_value=0.0, max_value=150.0, value=50.0)
 contract = st.selectbox("Contract Type", ["Month-to-month", "One year", "Two year"])
+internet_service = st.selectbox("Internet Service", ["DSL", "Fiber optic", "No"])
+online_security = st.selectbox("Online Security", ["Yes", "No"])
+tech_support = st.selectbox("Tech Support", ["Yes", "No"])
+paperless_billing = st.selectbox("Uses Paperless Billing?", ["Yes", "No"])
+payment_method = st.selectbox("Payment Method", [
+    "Electronic check", "Mailed check", "Bank transfer (automatic)", "Credit card (automatic)"
+])
 
-# Preprocessing
-gender = 1 if gender == "Male" else 0
-senior = 1 if senior == "Yes" else 0
+# Feature engineering
+gender_male = 1 if gender == "Male" else 0
+senior_citizen = 1 if senior_citizen == "Yes" else 0
+partner = 1 if partner == "Yes" else 0
+dependents = 1 if dependents == "Yes" else 0
+paperless_billing = 1 if paperless_billing == "Yes" else 0
+
+# One-hot for contract
 contract_one_year = 1 if contract == "One year" else 0
 contract_two_year = 1 if contract == "Two year" else 0
 
-# Make feature array
-features = np.array([[tenure, monthly_charges, senior, gender, contract_one_year, contract_two_year]])
+# One-hot for internet service
+internet_fiber = 1 if internet_service == "Fiber optic" else 0
+internet_no = 1 if internet_service == "No" else 0
 
-# Predict
-if st.button("Predict Churn"):
+# Online security and tech support
+online_security = 1 if online_security == "Yes" else 0
+tech_support = 1 if tech_support == "Yes" else 0
+
+# One-hot for payment method
+payment_bank = 1 if payment_method == "Bank transfer (automatic)" else 0
+payment_credit = 1 if payment_method == "Credit card (automatic)" else 0
+payment_mailed = 1 if payment_method == "Mailed check" else 0
+
+# Prepare input
+features = np.array([[tenure, monthly_charges, senior_citizen, gender_male, partner,
+                      dependents, paperless_billing, contract_one_year, contract_two_year,
+                      internet_fiber, internet_no, online_security, tech_support,
+                      payment_bank, payment_credit, payment_mailed]])
+
+# Predict button
+if st.button("🔍 Predict"):
     prediction = model.predict(features)
     if prediction[0] == 1:
         st.error("⚠️ This customer is likely to CHURN.")
     else:
         st.success("✅ This customer is likely to STAY.")
-
-# 1. Dataset load pannunga (replace with your file name)
-df = pd.read_csv("WA_Fn-UseC_-Telco-Customer-Churn.csv")
-
-# 2. Split features & target
-X = df.drop("Churn", axis=1)
-y = df["Churn"]
-
-# 3. Train-test split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# 4. Train model
-model = XGBClassifier()
-model.fit(X_train, y_train)
-
-# 5. Save as .pkl
-import joblib
-
-# Suppose 'model' is your trained XGBoost model
-joblib.dump(model, "xgboost_churn_model.pkl")
-
-
-print("✅ Model trained and saved successfully!")
-import joblib
-import xgboost as xgb
-
-# Assuming 'model' is your trained XGBoost model
-joblib.dump(model, "xgboost_churn_model.pkl")
-with open("xgboost_churn_model.pkl", "rb") as f:
-    content = f.read()
-    print(len(content))  # Should be > 0
