@@ -3,6 +3,9 @@ import numpy as np
 import pandas as pd
 import joblib
 
+X.columns.to_list()
+
+
 # Load the trained model
 model = joblib.load("xgboost_churn_model.pkl")
 
@@ -65,18 +68,17 @@ if st.button("🔍 Predict"):
  'PaymentMethod_Credit card (automatic)',
  'PaymentMethod_Mailed check']
 # All features expected by the model (copy exact from Colab)
-expected_columns = [
-    'tenure', 'MonthlyCharges', 'SeniorCitizen', 'gender_Male',
-    'Partner_Yes', 'Dependents_Yes', 'PaperlessBilling_Yes',
-    'Contract_One year', 'Contract_Two year',
-    'InternetService_Fiber optic', 'InternetService_No',
-    'OnlineSecurity_Yes', 'TechSupport_Yes',
-    'PaymentMethod_Bank transfer (automatic)',
-    'PaymentMethod_Credit card (automatic)',
-    'PaymentMethod_Mailed check'
-]
+expected_columns = ['tenure', 'MonthlyCharges', 'SeniorCitizen', 'gender_Male',
+ 'Partner_Yes', 'Dependents_Yes', 'PaperlessBilling_Yes',
+ 'Contract_One year', 'Contract_Two year',
+ 'InternetService_Fiber optic', 'InternetService_No',
+ 'OnlineSecurity_Yes', 'TechSupport_Yes',
+ 'PaymentMethod_Bank transfer (automatic)',
+ 'PaymentMethod_Credit card (automatic)',
+ 'PaymentMethod_Mailed check']
 
-# Your actual inputs from user
+
+# User input handling
 user_input = {
     'tenure': tenure,
     'MonthlyCharges': monthly_charges,
@@ -96,5 +98,5 @@ user_input = {
     'PaymentMethod_Mailed check': 1 if payment_method == "Mailed check" else 0
 }
 
-# Create a full DataFrame with all columns, filling missing ones with 0
+# Force structure to match training columns
 input_df = pd.DataFrame([[user_input.get(col, 0) for col in expected_columns]], columns=expected_columns)
