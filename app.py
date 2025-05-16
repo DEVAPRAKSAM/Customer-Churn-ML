@@ -56,3 +56,45 @@ if st.button("🔍 Predict"):
         st.error("⚠️ This customer is likely to CHURN.")
     else:
         st.success("✅ This customer is likely to STAY.")
+['tenure', 'MonthlyCharges', 'SeniorCitizen', 'gender_Male',
+ 'Partner_Yes', 'Dependents_Yes', 'PaperlessBilling_Yes',
+ 'Contract_One year', 'Contract_Two year',
+ 'InternetService_Fiber optic', 'InternetService_No',
+ 'OnlineSecurity_Yes', 'TechSupport_Yes',
+ 'PaymentMethod_Bank transfer (automatic)',
+ 'PaymentMethod_Credit card (automatic)',
+ 'PaymentMethod_Mailed check']
+# All features expected by the model (copy exact from Colab)
+expected_columns = [
+    'tenure', 'MonthlyCharges', 'SeniorCitizen', 'gender_Male',
+    'Partner_Yes', 'Dependents_Yes', 'PaperlessBilling_Yes',
+    'Contract_One year', 'Contract_Two year',
+    'InternetService_Fiber optic', 'InternetService_No',
+    'OnlineSecurity_Yes', 'TechSupport_Yes',
+    'PaymentMethod_Bank transfer (automatic)',
+    'PaymentMethod_Credit card (automatic)',
+    'PaymentMethod_Mailed check'
+]
+
+# Your actual inputs from user
+user_input = {
+    'tenure': tenure,
+    'MonthlyCharges': monthly_charges,
+    'SeniorCitizen': 1 if senior_citizen == "Yes" else 0,
+    'gender_Male': 1 if gender == "Male" else 0,
+    'Partner_Yes': 1 if partner == "Yes" else 0,
+    'Dependents_Yes': 1 if dependents == "Yes" else 0,
+    'PaperlessBilling_Yes': 1 if paperless_billing == "Yes" else 0,
+    'Contract_One year': 1 if contract == "One year" else 0,
+    'Contract_Two year': 1 if contract == "Two year" else 0,
+    'InternetService_Fiber optic': 1 if internet_service == "Fiber optic" else 0,
+    'InternetService_No': 1 if internet_service == "No" else 0,
+    'OnlineSecurity_Yes': 1 if online_security == "Yes" else 0,
+    'TechSupport_Yes': 1 if tech_support == "Yes" else 0,
+    'PaymentMethod_Bank transfer (automatic)': 1 if payment_method == "Bank transfer (automatic)" else 0,
+    'PaymentMethod_Credit card (automatic)': 1 if payment_method == "Credit card (automatic)" else 0,
+    'PaymentMethod_Mailed check': 1 if payment_method == "Mailed check" else 0
+}
+
+# Create a full DataFrame with all columns, filling missing ones with 0
+input_df = pd.DataFrame([[user_input.get(col, 0) for col in expected_columns]], columns=expected_columns)
